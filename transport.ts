@@ -17,6 +17,9 @@ export class Transport {
     if (cb !== undefined) {
       cb();
     }
+    this.start(port);
+  }
+  private async start(port: number) {
     for await (const req of serve({ port: port })) {
     }
   }
