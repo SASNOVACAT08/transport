@@ -5,10 +5,22 @@ import {
   isWebSocketPingEvent,
 } from "https://deno.land/std/ws/mod.ts";
 
+interface Route {
+  name: String;
+  cb: Function;
+}
+
 export class Transport {
-  constructor(cb?: Function) {
+  private route: Array<Route>;
+  constructor(port: number = 8080, cb?: Function) {
+    this.route = [];
     if (cb !== undefined) {
       cb();
     }
+    for await (const req of serve({ port: port })) {
+    }
+  }
+  on(route: String, cb: Function) {
+    this.route.push({ name: route, cb: cb });
   }
 }
