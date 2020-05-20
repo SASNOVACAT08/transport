@@ -4,46 +4,29 @@ import {
   isWebSocketCloseEvent,
   isWebSocketPingEvent,
 } from "https://deno.land/std/ws/mod.ts";
-
-interface Route {
-  route: String;
-  cb: Function;
-}
+import { Socket } from "./Socket.ts";
 
 export class Transport {
-  private route: Array<Route>;
-  constructor(port: number = 8080, cb?: Function) {
-    this.route = [];
-    if (cb !== undefined) {
-      cb();
-    }
-    this.start(port);
+  private sockets: Array<Socket>;
+  private port: number;
+  constructor(port: number = 8080) {
+    this.sockets = [];
+    this.port = port;
   }
-  private async start(port: number) {
-    for await (const req of serve({ port: port })) {
-      const { conn, r: bufReader, w: bufWriter, headers } = req;
-      const sock = await acceptWebSocket({
-        conn,
-        bufReader,
-        bufWriter,
-        headers,
-      });
-      let connection = this.route.find((data) => data.route === "connection");
-      if (connection) {
-        connection.cb();
-      }
-      for await (const ev of sock) {
-        if (typeof ev === "string") {
-          let eventObject = JSON.parse(ev);
-          let event = this.route.find(
-            (data) => data.route === eventObject.route
-          );
-          event?.cb(sock, eventObject.data);
-        }
+  async on(route: string, cb: Function) {
+    if (route === "connection") {
+      for await (const req of serve({ port: this.port })) {
+        const { conn, r: bufReader, w: bufWriter, headers } = req;
+        const sock = await acceptWebSocket({
+          conn,
+          bufReader,
+          bufWriter,
+          headers,
+        });
+        const socket = new Socket(sock);
+        this.sockets.push(socket);
+        cb(socket);
       }
     }
-  }
-  on(route: String, cb: Function) {
-    this.route.push({ route: route, cb: cb });
   }
 }
