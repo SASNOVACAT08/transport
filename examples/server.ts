@@ -1,5 +1,4 @@
-import { Transport } from "../transport.ts";
-import { Socket } from "../Socket.ts";
+import { Transport, Socket } from "../mod.ts";
 
 const transport = new Transport();
 
