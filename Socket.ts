@@ -16,7 +16,7 @@ export class Socket {
     this.id = v4.generate();
     this.start();
   }
-  async start() {
+  private async start() {
     for await (const ev of this.webSocket) {
       if (typeof ev === "string") {
         let eventObject = JSON.parse(ev);
@@ -27,7 +27,10 @@ export class Socket {
       }
     }
   }
-  on(route: string, cb: Function) {
+  public on(route: string, cb: Function) {
     this.route.push({ route: route, cb: cb });
+  }
+
+  public emit(route: string, data: any) {
   }
 }

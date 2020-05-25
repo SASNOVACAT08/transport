@@ -13,7 +13,7 @@ export class Transport {
     this.sockets = [];
     this.port = port;
   }
-  async on(route: string, cb: Function) {
+  public async on(route: string, cb: Function) {
     if (route === "connection") {
       for await (const req of serve({ port: this.port })) {
         const { conn, r: bufReader, w: bufWriter, headers } = req;

@@ -1,5 +1,5 @@
-import { TransportClient } from "../TransportClient.ts";
+import { TransportClient } from "../mod.ts";
 
-const transport = new TransportClient("127.0.0.1:8080");
+const transport = await TransportClient("127.0.0.1:8080");
 
 transport.emit("test", "Hello World !");
