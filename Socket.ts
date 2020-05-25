@@ -31,6 +31,11 @@ export class Socket {
     this.route.push({ route: route, cb: cb });
   }
 
-  public emit(route: string, data: any) {
+  public async emit(route: string, data: any) {
+    let obj = {
+      route: route,
+      data: data,
+    };
+    await this.webSocket.send(JSON.stringify(obj));
   }
 }

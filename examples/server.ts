@@ -6,5 +6,6 @@ transport.on("connection", (socket: Socket) => {
   socket.on("test", (data: string) => {
     console.log(socket.id);
     console.log(data);
+    socket.emit("RES_TEST", "response");
   });
 });
